@@ -92,11 +92,14 @@ class KafkaAsserter {
 ## How It Works
 
 1. `KafkaService` starts execution and generates 20 test messages.
-2. Each message is sent to the `request_topic16` Kafka topic with the interval of 100ms.
+2. Using a different thread for each message, `RequestProcessor.sendMessage` sends a DTO object to the `request_topic16`
+   Kafka topic at an interval of 100ms.
+3. Meanwhile, this same method waits fot the response by calling `KafkaAsserter.checkForResponse`.
 3. The `KafkaConsumerService` receives these requests, processes them, and sends responses to `response_topic16`.
 4. The `KafkaConsumerService` captures responses and passes them to `KafkaAsserter`.
-5. `KafkaAsserter` matches responses to their originating request by checking thread IDs.
-6. If a response is received within the timeout period, it is printed; otherwise, a timeout message is logged.
+5. `KafkaAsserter.checkForResponse` matches responses to their originating requests by checking their thread IDs. If a
+   response is received within the timeout period, it returns the DTO; otherwise, it returns null (indicating a
+   timeout).
 
 ## Running the Project
 
@@ -117,10 +120,3 @@ mvn spring-boot:run
 - Improve response matching efficiency.
 - Implement a more sophisticated waiting mechanism to avoid polling inefficiencies.
 - Extend test cases for different concurrency scenarios.
-
-## Conclusion
-
-This project provides an effective way to manage concurrent Kafka messages in a controlled manner. The **KafkaAsserter**
-class is the backbone of this approach, ensuring that each request gets the correct response, thereby solving the issue
-of misdirected test responses in CI/CD pipelines.
-
