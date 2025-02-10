@@ -92,7 +92,7 @@ class KafkaAsserter {
 ## How It Works
 
 1. `KafkaService` starts execution and generates 20 test messages.
-2. Each message is sent to the `request_topic16` Kafka topic.
+2. Each message is sent to the `request_topic16` Kafka topic with the interval of 100ms.
 3. The `KafkaConsumerService` receives these requests, processes them, and sends responses to `response_topic16`.
 4. The `KafkaConsumerService` captures responses and passes them to `KafkaAsserter`.
 5. `KafkaAsserter` matches responses to their originating request by checking thread IDs.
