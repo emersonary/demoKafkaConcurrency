@@ -61,6 +61,7 @@ class KafkaAsserter {
             if (i < queue.size()) {
                 AnyDTO response = queue.get(i);
                 if (response.getThreadId() == request.getThreadId()) {
+                    response.setThreadId(0L); // It clears the path in case the same thread performs more than one assertion
                     return response;
                 }
                 i++;
