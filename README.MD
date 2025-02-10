@@ -92,7 +92,8 @@ class KafkaAsserter {
 ## How It Works
 
 1. `KafkaService` starts execution and generates 20 test messages.
-2. Using a different thread for each message, `RequestProcessor.sendMessage` sends a DTO object to the `request_topic16`
+2. Using a different thread for each message, `RequestProcessor.sendMessage` injects the thread id into the DTO object,
+   and sends it to the `request_topic16`
    Kafka topic at an interval of 100ms.
 3. Meanwhile, this same method waits fot the response by calling `KafkaAsserter.checkForResponse`.
 3. The `KafkaConsumerService` receives these requests, processes them, and sends responses to `response_topic16`.
